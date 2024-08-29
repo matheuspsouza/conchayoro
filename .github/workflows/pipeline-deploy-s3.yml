@@ -1,8 +1,8 @@
 name: pipeline-deploy-s3
 on:
   push:
-    branches: [ main ]
-    
+    branches: [main]
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,17 +11,17 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "18"
+          cache: "npm"
       - name: frontend install
-        run: npm --prefix my-app-frontend install
+        run: npm --prefix frontend install
       - name: frontend build
-        run: npm --prefix my-app-frontend run build
+        run: npm --prefix frontend run build
       - name: upload frontend build
         uses: actions/upload-artifact@v4
         with:
           name: build
-          path: my-app-frontend/.next/server/app
+          path: frontend/.next/server/app
 
   deploy:
     runs-on: ubuntu-latest
@@ -36,5 +36,5 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: build
-          path: my-app-frontend/.next/server/app
-      - run: aws s3 cp my-app-frontend/.next/server/app s3://$BUCKET_S3 --recursive --acl public-read
+          path: frontend/.next/server/app
+      - run: aws s3 cp frontend/.next/server/app s3://$BUCKET_S3 --recursive --acl public-read
